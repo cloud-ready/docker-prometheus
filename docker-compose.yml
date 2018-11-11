@@ -1,0 +1,38 @@
+version: '2.1'
+services:
+  prometheus:
+    container_name: ${CONTAINER_HOST_NAME:-standalone.prometheus}
+    hostname: ${CONTAINER_HOST_NAME:-standalone.prometheus}
+    image: ${IMAGE_PREFIX:-prom/}${IMAGE_NAME:-prometheus}:${IMAGE_TAG:-v2.5.0}
+    #environment:
+    networks:
+      local-network:
+        ipv4_address: 172.16.238.88
+        #ipv6_address: 2001:3984:3989::88
+    ports:
+    - "${EXTERNAL_PROMETHEUS_PORT:-9090}:${PROMETHEUS_PORT:-9090}"
+    restart: always
+    volumes:
+    - prometheus_data:/prometheus
+    - ${PROMETHEUS_CONFIG:-./data/etc/prometheus/prometheus.yml}:/etc/prometheus/prometheus.yml:ro
+
+
+networks:
+  local-network:
+    external: true
+    driver: bridge
+    enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.16.238.0/24
+      #- subnet: 2001:3984:3989::/64
+
+
+volumes:
+  prometheus_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/data/prometheus
+      o: bind
