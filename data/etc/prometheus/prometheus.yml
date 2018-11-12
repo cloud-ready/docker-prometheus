@@ -29,7 +29,14 @@ scrape_configs:
     - targets: ['localhost:9090']
 
   # cAdvisor
-  - job_name: cadvisor
+  - job_name: 'cadvisor'
     static_configs:
     - targets:
-      - standalone.cadvisor:8080
+      - 'standalone.cadvisor:8080'
+
+  # node-exporter
+  - job_name: 'node-exporter'
+    scrape_interval: 10s
+    static_configs:
+    - targets:
+      - 'standalone.node-exporter:9100'
