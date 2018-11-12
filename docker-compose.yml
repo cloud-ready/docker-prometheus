@@ -2,15 +2,23 @@ version: '2.1'
 services:
   prometheus:
     container_name: ${CONTAINER_HOST_NAME:-standalone.prometheus}
-    hostname: ${CONTAINER_HOST_NAME:-standalone.prometheus}
-    image: ${IMAGE_PREFIX:-prom/}${IMAGE_NAME:-prometheus}:${IMAGE_TAG:-v2.5.0}
     #environment:
+    hostname: ${CONTAINER_HOST_NAME:-standalone.prometheus}
+    labels:
+      deploy.config.commit: ${LABEL_DEPLOY_CONFIG_COMMIT:-unknown}
+      deploy.config.name: ${LABEL_DEPLOY_CONFIG_NAME:-unknown}
+      deploy.config.ref: ${LABEL_DEPLOY_CONFIG_REF:-unknown}
+      deploy.util.commit: ${LABEL_DEPLOY_UTIL_COMMIT:-unknown}
+      deploy.util.ref: ${LABEL_DEPLOY_UTIL_REF:-unknown}
+      instance.name.short: ${LABEL_INSTANCE_NAME_SHORT:-standalone.prometheus}
+      instance.name: ${LABEL_INSTANCE_NAME:-127.0.0.1/prometheus/standalone}
+    image: ${IMAGE_PREFIX:-prom/}${IMAGE_NAME:-prometheus}:${IMAGE_TAG:-v2.5.0}
     networks:
       local-network:
-        ipv4_address: 172.16.238.88
-        #ipv6_address: 2001:3984:3989::88
+        ipv4_address: ${IPV4_ADDRESS:-172.16.238.88}
+        #ipv6_address: ${IPV6_ADDRESS:-2001:3984:3989::88}
     ports:
-    - "${EXTERNAL_PROMETHEUS_PORT:-9090}:${PROMETHEUS_PORT:-9090}"
+    - "${EXTERNAL_PROMETHEUS_9090_PORT:-9090}:9090"
     restart: always
     volumes:
     - prometheus_data:/prometheus
