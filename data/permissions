@@ -1,0 +1,5 @@
+
+d etc/prometheus                1000:1000 777
+d prometheus                    1000:1000 777
+
+f etc/prometheus/prometheus.yml 1000:1000 777
